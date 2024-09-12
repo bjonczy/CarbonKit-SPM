@@ -1,6 +1,6 @@
 //  The MIT License (MIT)
 //
-//  Copyright (c) 2015 - present Ermal Kaleci
+//  Copyright (c) 2015 Ermal Kaleci
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -20,17 +20,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 //
-
 #import <UIKit/UIKit.h>
-
 
 @interface CarbonSwipeRefresh : UIControl
 
-@property(nonatomic, retain, setter=setColors:) NSArray *colors;
+@property (nonatomic, retain, setter=setColors:) NSArray *colors;
 
 - (id)initWithScrollView:(UIScrollView *)scrollView;
 
-- (void)startRefreshing;
 - (void)endRefreshing;
 
 // in case when navigation bar is not tranparent set 0

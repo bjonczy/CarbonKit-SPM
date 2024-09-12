@@ -1,6 +1,6 @@
 //  The MIT License (MIT)
 //
-//  Copyright (c) 2015 - present Ermal Kaleci
+//  Copyright (c) 2015 Ermal Kaleci
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,5 @@
 //  SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
-
-//! Project version number for CarbonKit.
-FOUNDATION_EXPORT double CarbonKitVersionNumber;
-
-//! Project version string for CarbonKit.
-FOUNDATION_EXPORT const unsigned char CarbonKitVersionString[];
-
-#import "CarbonSwipeRefresh.h"
 #import "CarbonTabSwipeNavigation.h"
+#import "CarbonSwipeRefresh.h"

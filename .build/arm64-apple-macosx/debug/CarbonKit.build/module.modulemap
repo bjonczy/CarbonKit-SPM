@@ -1,0 +1,4 @@
+module CarbonKit {
+    umbrella header "/Users/bjonczy/Developer/Placewise/spm-packages/CarbonKit/CarbonKit/include/CarbonKit.h"
+    export *
+}

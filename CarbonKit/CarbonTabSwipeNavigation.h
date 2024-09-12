@@ -1,6 +1,6 @@
 //  The MIT License (MIT)
 //
-//  Copyright (c) 2015 - present Ermal Kaleci
+//  Copyright (c) 2015 Ermal Kaleci
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,219 +22,128 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CarbonTabSwipeScrollView.h"
-
-
-NS_ASSUME_NONNULL_BEGIN
 
 @class CarbonTabSwipeNavigation;
 
-@protocol CarbonTabSwipeNavigationDelegate <NSObject>
+/**
+ *	CarbonTabSwipe Delegate
+ */
+@protocol CarbonTabSwipeDelegate <NSObject>
 
 @required
 /**
- *  This method must override to return each view controller
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *  @param index Tab index
- *
- *  @return UIViewController at index
+ *	This method must override to return each view controllers
+ *	@param tabSwipe CarbonTabSwipeNavigation
+ *	@param index NSUInteger : tab index
+ *	@return A UIViewController for tab at index
  */
-- (nonnull UIViewController *)carbonTabSwipeNavigation:
-                                  (nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
-                                 viewControllerAtIndex:(NSUInteger)index;
+- (UIViewController *)tabSwipeNavigation:(CarbonTabSwipeNavigation *)tabSwipe viewControllerAtIndex:(NSUInteger)index;
 
 @optional
 /**
- *  Will move to index
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *  @param index Target index
+ *	When finished moving to index
+ *	@param tabSwipe CarbonTabSwipeNavigation
+ *	@param index NSInteger : current index
  */
-- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
-                 willMoveAtIndex:(NSUInteger)index;
-
-/**
- *  Did move to index
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *  @param index Current index
- */
-- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
-                  didMoveAtIndex:(NSUInteger)index;
-
-/**
- *  Will start the page transition from index.
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *  @param index Starting index
- */
-- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
-    willBeginTransitionFromIndex:(NSUInteger)index;
-
-/**
- *  Did finish the page transition to index.
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *  @param index Target index
- */
-- (void)carbonTabSwipeNavigation:(nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation
-      didFinishTransitionToIndex:(NSUInteger)index;
-
-/**
- *  Toolbar position
- *
- *  @param carbonTabSwipeNavigation CarbonTabSwipeNavigation instance
- *
- *  @return Toolbar position (UIBarPositionTop or UIBarPositionBottom)
- */
-- (UIBarPosition)barPositionForCarbonTabSwipeNavigation:
-    (nonnull CarbonTabSwipeNavigation *)carbonTabSwipeNavigation;
+- (void)tabSwipeNavigation:(CarbonTabSwipeNavigation *)tabSwipe didMoveAtIndex:(NSInteger)index;
 
 @end
 
+/**
+ *  Carbon Tab Swipe Interface
+ */
 @interface CarbonTabSwipeNavigation : UIViewController
 
-@property(nonatomic) NSUInteger currentTabIndex;
-@property(nonatomic) NSLayoutConstraint *toolbarHeight;
-@property(nonatomic, nonnull) UIToolbar *toolbar;
-@property(nonatomic, nonnull) UIPageViewController *pageViewController;
-@property(nonatomic, nonnull) CarbonTabSwipeScrollView *carbonTabSwipeScrollView;
-@property(weak, nonatomic) UIScrollView *pagesScrollView;
-@property(weak, nonatomic) id<CarbonTabSwipeNavigationDelegate> delegate;
-@property(weak, nonatomic, readonly) CarbonTabSwipeSegmentedControl *carbonSegmentedControl;
-@property(nonatomic) NSMutableDictionary<NSNumber *, UIViewController *> *viewControllers;
-
 /**
- *  Insert instance into rootViewController and create constraint using
- *  topLayoutGuide, bottomLayoutGuide, leading, trailing equal to 0.
- *  +-----------------------------------+
- *  |          topLayoutGuide           |
- *  +-----------------------------------+
- *  |                                   |
- *  |                                   |
- *  |     CarbonTabSwipeNavigation      |
- *  |                                   |
- *  |                                   |
- *  +-----------------------------------+
- *  |        bottomLayoutGuide          |
- *  +-----------------------------------+
- *
- *  @param rootViewController Parent view controller
+ *	CarbonTabSwipeDelegate
  */
-- (void)insertIntoRootViewController:(nonnull UIViewController *)rootViewController;
+@property (nonatomic, weak) id<CarbonTabSwipeDelegate> delegate;
 
 /**
- *  Insert instance into rootViewController and create constraint using
- *  targetViewTopAnchor, targetViewBottomAnchor, leading, trailing equal to 0.
- *  +-----------------------------------+
- *  |       targetViewTopAnchor         |
- *  +-----------------------------------+
- *  |                                   |
- *  |                                   |
- *  |     CarbonTabSwipeNavigation      |
- *  |                                   |
- *  |                                   |
- *  +-----------------------------------+
- *  |      targetViewBottomAnchor       |
- *  +-----------------------------------+
- *
- *  @param rootViewController Parent view controller
- *	@param targetView Parent view
+ *	Get the index value of the currently selected tab. Setting this value will change the previously selected tab to the one which matches the new index value.
  */
-- (void)insertIntoRootViewController:(nonnull UIViewController *)rootViewController
-                       andTargetView:(nonnull UIView *)targetView;
+@property (nonatomic, assign) NSUInteger currentTabIndex;
 
 /**
- *  Create CarbonTabSwipeNavigation with items
- *
- *  @param items Array of items
- *  @param target Delegate target object
- *
- *  @return CarbonTabSwipeNavigation instance
+ *	This method will create TabSwipeNavigation
+ *	@param viewController UIViewController : parent view controller
+ *	@param names NSArray : name of each tabs
+ *	@param tintColor UIColor : color of navigation and tabs
+ *	@param delegate id : object where CarbonTabSwipeNavigation will delegate
  */
-- (instancetype)initWithItems:(nullable NSArray *)items delegate:(nonnull id)target;
+- (instancetype)createWithRootViewController:(UIViewController *)viewController
+									tabNames:(NSArray *)names
+								   tintColor:(UIColor *)tintColor
+									delegate:(id)delegate
+								  startIndex:(NSInteger)startIndex;
+
+- (instancetype)createWithRootViewController:(UIViewController *)viewController
+									tabNames:(NSArray *)names
+								   tintColor:(UIColor *)tintColor
+									delegate:(id)delegate
+								  startIndex:(NSInteger)startIndex
+								  edgeInsets:(UIEdgeInsets)insets;
+
+- (instancetype)createWithRootViewControllerWithoutConstraints:(UIViewController *)viewController
+													  tabNames:(NSArray *)names
+													 tintColor:(UIColor *)tintColor
+													  delegate:(id)delegate
+													startIndex:(NSInteger)startIndex
+													edgeInsets:(UIEdgeInsets)insets;
+
+- (UIViewController *)currentViewController;
 
 /**
- *  Create CarbonTabSwipeNavigation with items
- *
- *  @param items Array of items
- *  @param toolBar Tool bar for Menu
- *  @param target Delegate target object
- *
- *  @return CarbonTabSwipeNavigation instance
+ *  Navigation tranlucent
+ *  @param translucent Navigation Bar translucent
  */
-- (instancetype)initWithItems:(nullable NSArray *)items
-                      toolBar:(nonnull UIToolbar *)toolBar
-                     delegate:(nonnull id)target __attribute__((deprecated));
+- (void)setTranslucent:(BOOL)translucent;
 
 /**
- *  Set tab bar height
- *
- *  @param height TabBar height
- */
-- (void)setTabBarHeight:(CGFloat)height;
-
-/**
- *  Set indicator height
- *
+ *  Change indicator height
  *  @param height Indicator height
  */
 - (void)setIndicatorHeight:(CGFloat)height;
 
-/**
- *  Set indicator color
- *
- *  @param color Indicator color
- */
-- (void)setIndicatorColor:(nullable UIColor *)color;
+- (void)setIndicatorColor:(UIColor *)color;
+
+- (void)setTabBarHidden;
 
 /**
- *  Set segmented control color for normal state
- *
- *  @param color Normal state color
+ *	UIColor for tab in normal state
+ *	@param color UIColor : color of normal state
  */
-- (void)setNormalColor:(nonnull UIColor *)color;
+- (void)setNormalColor:(UIColor *)color;
 
 /**
- *  Set segmented control color and font for normal state
- *
- *  @param color Normal state color
- *  @param font Normal state font
+ *	UIFont and UIColor for tab in normal state
+ *	@param color UIColor : color of normal state
+ *	@param font UIFont : font of normal state
  */
-- (void)setNormalColor:(nonnull UIColor *)color font:(nonnull UIFont *)font;
+- (void)setNormalColor:(UIColor *)color font:(UIFont *)font;
 
 /**
- *  Set segmented control color for selected sate
- *
- *  @param color Selected state color
+ *	UIColor for tab in selected state
+ *	@param color UIColor : color of selected state
  */
-- (void)setSelectedColor:(nonnull UIColor *)color;
+- (void)setSelectedColor:(UIColor *)color;
 
 /**
- *  Set segmented control color and font for selected state
- *
- *  @param color Selected state color
- *  @param font Selected state font
+ *	UIFont and UIColor for tab in selected state
+ *	@param color UIColor : color of selected state
+ *	@param font UIFont : font of selected state
  */
-- (void)setSelectedColor:(nonnull UIColor *)color font:(nonnull UIFont *)font;
+- (void)setSelectedColor:(UIColor *)color font:(UIFont *)font;
 
 /**
- *  Set an extra width for each segment
- *  Use positive values for increasign or nevative values for descreasing
- *
- *  @param extraWidth Extra width value
+ * Add 1 pixel shadow
  */
-- (void)setTabExtraWidth:(CGFloat)extraWidth;
+- (void)addShadow;
 
 /**
- *  Change selected tab index
- *
- *  @param currentTabIndex Desired index to move
- *  @param animate Change the tab with animation
+ *  Set extra space on the left and the right of tab title
+ *  @param extra CGFloat : left and right extra space
  */
-- (void)setCurrentTabIndex:(NSUInteger)currentTabIndex withAnimation:(BOOL)animate;
-
-NS_ASSUME_NONNULL_END
+- (void)setExtraSpace:(CGFloat)extra;
 
 @end
